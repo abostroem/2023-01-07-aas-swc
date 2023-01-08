@@ -1,0 +1,319 @@
+x=Welcome to The Carpentries Etherpad!
+
+This pad is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents.
+
+Use of this service is restricted to members of The Carpentries community; this is not for general purpose use (for that, try https://etherpad.wikimedia.org).
+
+Users are expected to follow our code of conduct: https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html
+
+All content is publicly available under the Creative Commons Attribution License: https://creativecommons.org/licenses/by/4.0/
+
+ ----------------------------------------------------------------------------
+Here  are some useful links during the meeting:
+	* WIFI :    SSID = Winter241     Password:    AAS241Winter
+	* Etherpad: https://pad.carpentries.org/2023-01-07-aas-swc
+	* Workshop: https://abostroem.github.io/2023-01-07-aas-swc/ - the workshop outline
+	* Software Carpentry Lessons: https://software-carpentry.org/lessons/
+	* https://github.com/teuben/AAS241 - Peter's easter eggs (will be updated during the meeting)
+	* Today's lesson: 
+		* SWC Shell Novice:  https://swcarpentry.github.io/shell-novice/
+		* Python lesson: https://github.com/abostroem/2017-01-03-aas/blob/gh-pages/python/master_plan.ipynb
+			* This isn't the official SWC python lesson but it contains the same material. Here are links to the official lessons
+			* P1 (we followed this material although not in the same order or with the same dataset):  https://swcarpentry.github.io/python-novice-inflammation/
+			* P2 (this is a relatively new lesson that covers different material than we presented in this workshop): https://swcarpentry.github.io/python-novice-gapminder/
+		* Hubble Flow data: https://raw.githubusercontent.com/teuben/AAS241/main/hubble_data.dat
+	* <more to come here during the workshop>
+	* https://peps.python.org/pep-0008/
+	* 
+
+
+
+*Morning session part 1
+
+Setup: Open the shell lesson (https://swcarpentry.github.io/shell-novice/), click on "setup" in the top menu bar, and download the file at the top of that page (shell-lesson-data.zip). Move the file to your desktop and unzip the file. You should now have a folder named "shell-lesson-data" on your desktop.
+
+Move into the new directory: Open your terminal and navigate to the desktop. You can do this with the command "cd Desktop". Using the command "ls" will print the contents of your desktop. You should see the directory "shell-lesson-data". Go ahead and move into that directory with the command "cd shell-lesson-data".
+
+Getting help with a command: You can get help info about commands either by putting "man" before the command. For example, to get help with the "ls" command, use the command "man ls" (i.e. open the manual for ls). NOTE: to exit the manual, type "q" 
+
+Where am I right now? use the command "pwd", which stands for "print working directory".
+
+Move into the exercise data directory: use the "cd" command, again, and this time use tab completion! When you type "cd e", if you hit tab, it will complete the command for you, and fill in "cd exercise-data".
+
+Some helpful cd shortcuts: 
+	-- "cd .." takes you to up one directory. So for example, if you are in "Desktop/shell-lesson-data/exercise-data", and execute "cd ..", you will be taken to "Desktop/shell-lesson-data".
+	-- "cd -" takes you back to the previous directory you were in. 
+	
+Making a directory: move to the writing directory by executing "cd exercise-data/writing" from the "shell-lesson-data" directory. Make a directory called "thesis". You can do this with the command "mkdir thesis".
+
+Creating a text file: create the file "draft.txt" using the command "touch draft.txt". Let's open that file with nano. Use the command "nano draft.txt". Type some text, and then we will try to save it. You can save the file with the keyboard shortcut "ctrl-o". It will ask for the file name. You can just hit enter and it will save using the open file. Then you can exit using the keyboard shortcut "ctrl-x".
+
+Create multiple directories at once: 
+	-- nested directory creation: let's create a project/data directory, living two directories up from our current directory (we are currently in shell-lesson-data/writing/thesis). If we try to run the command "mkdir ../../project/data", it will complain that we can't create the data directory because the project directory doesn't exist. However, we can create the project and data directories at the same time if we use the "-p" flag. In other words, "mkdir -p ../../project/data" will work! Go check that those directories now exist.
+	-- create two directories with one command: now let's use the command "mkdir -p ../../project/code ../../project/notebooks". This will create the project/code and project/notebooks directory at the same time. All we had to do was separate the directory names with a space! You can list however many directories you want to create.
+	
+Copying files: Move to the exercise-data directory, and look at the contents of the "creatures" directory. You will see files for a bunch of creatures. Let's make a directory to store backups of these files. Create a directory named "backup" (i.e. using "mkdir backup"). Let's copy some of the creature files to this backup directory. We can do this using the "cp" command (which is short for "copy"). Execute the command "cp creatures/minotaur.dat creatures/unicorn.dat backup". This will copy the first two files into the backup directory. Execute "ls backup" and check that copies of this files are now in the backup directory.
+
+Wildcards: when specifying files in the command line, you can use wildcards to fill in pieces of a file name. There are two main wildcards
+	-- *  - the star wildcard says "fill in whatever you want." Imagine you have two files named "my-file.txt" and "my-file-second-draft.txt". Both of these will match "my-file*", because the star is able to match both ".txt" and "-second-draft.txt"
+	-- ?  - the question mark wildcard says "fill in only one character". Imagine you have three files named "my-file-1.txt", "my-file-2.txt", and my-file-10.txt". The name "my-file-?.txt" will match "my-file-1.txt" and "my-file-2.txt" because these only require fill in one character ("1" and "2", respectively). However, this will not match "my-file-10.txt", because that would require filling in two characters.
+An exercise to test your knowledge: go into the exercise-data/proteins directory. Try to come up with an "ls" command that will print only the pentane.pdb and propane.pdb files.
+
+How many words are in a file? use the "wc" command. This might be helpful, for example, to check if a file has been written to. Try using the manual (i.e. "man wc") to see how this command is used.
+
+Printing the contents of a file:
+	-- "cat" - this command prints all the contents of a file. E.g. "cat myfile.txt" will print the entire contents of "myfile.txt".
+	-- "less" - this lets you see only a small chunk of the file at a time. This is helpful if you want to look at a very long file. The spacebar lets you scroll down the file; the "b" key lets you scroll upward; typing "q" will exit the file.
+	-- "head" - prints the first few lines of a file. The "-n" flag lets you specify how many lines to print. E.g. "head -n 5" prints the first five lines.
+	-- "tail" - identical to "head", except it prints the last n lines of the file (i.e. let's you see the end of the file). This is especially useful if you have a log file and you want to see the most recent log entries.
+	
+Put shell output into a file: 
+	-- Using the ">" command tells the shell to put the contents in a file. So for example, "ls > directory_contents.txt" will take the output of the "ls" command, and save it in the file "directory_contents.txt" file. Note if this file already exists, it will overwrite it!
+	-- Using the ">>" command does the same thing as ">", except that it will append to the given file. So if the file already exists, it will just add the contents to the end of the file, instead of totally overwriting the file.
+
+Small exercise combining several things we have learned: Let's save the lengths of some files in another file. The command "wc -l *" will print the number of lines of each file in this directory. The command "wc -l > lengths.txt" will save these file lengths into a new file named "lengths.txt". Now let's sort these files by length and save the sorted lengths into a new file. We can use the "sort" command : "sort -n lengths.txt > sorted_lengths.txt" 
+
+Piping commands: you can string commands together, where the output of one command is given as the input to the next command. This is called "piping", and is done using the vertical bar character, "|".
+	Example: let's get the lengths of some files, sort them, then print the first one (i.e. the shortest file). In other words, we want to pipe wc -> sort -> head. Remember the piping is done using the "|" character.
+	Answer: "wc -l * | sort -n | head -n 1"
+	
+A practical exercise: go to the shell-lesson-data/north-pacific-gyre directory. This directory contains a bunch of txt files, and two shell scripts (the names of shell scripts end in ".sh"). 
+	-- Imagine you expect all of the txt files to have exactly 300 lines. You want to check that everything ran as expected, and that all of these files do in fact have 300 lines. Write a command that will let you easily check if all of the files have exactly 300 lines. Hint: you can basically do what we did in the Piping Commands example
+	
+	
+	
+*Morning session part 2
+
+Loops!
+
+1. Start by going back to the creature directory (shell-lesson-data/exercise-data/creatures).
+2. Let's print the top of all these files. Execute "head -n 5 *.dat".
+3. How would we print only the classification from each file? Maybe we can put together head and tail commands. If you do "head -n 2 *.dat", you will see it will print each file up to the classifcation line. Now we want to print the last line of each one of these (because the last line is now the classification). We can't just pipe this into tail -n 1 (i.e. "head -n 2 *.dat | tail -n 1") won't work, because this will only print the last line of the entire output, rather than the last line of the output from every file. We need a loop!
+4. We can accomplish our goal by writing a "for loop"! That looks like this:
+		for filename in *.dat
+		do
+		    head -n 2 "$filename" | tail -n 1
+		done
+	This loops over all of the files in the list *.dat, then puts that filename into the head/tail pipe command.
+	
+Let's do another loop example. Let's copy all of our creature files to original-*.dat files. E.g. we want to make a copy of unicorn.dat called original-unicorn.dat. This is how you do that:
+		for filename in *.dat
+		do
+		        cp $filename original-"$filename"
+		done
+
+echo: "echo" is a command that just prints to the terminal. This is useful to output information, or just to check the value of some variable. So for example, you could run the previous loop with an echo command to check which files you will be working with:
+		for filename in *.dat
+		do
+		        echo "$filename"
+		done
+		
+Running a script: a script is a file that contains a bunch of commands to run. Let's try running one. Go back to shell-lesson-data/north-pacific-gyre
+	There are two scripts in this directory -- their names end in ".sh".
+	We can tell bash to run these scripts on some files. For example, "bash goostats.sh NENE01729A.txt" will run the goostats script on the given file.
+	
+	Let's run this script in a loop!
+		for datafile in NENE*A.txt NENE*B.txt
+		do
+		        bash goostats.sh $datafile stats-$datafile
+		done
+	This says "loop over all the NENE files that end in A or B, run the goostats script on them, and save the outputs with the prefix 'stats-'"
+	
+Writing a script: rather than typing all these commands into the terminal, let's put them into our own script so they're easy to edit and reuse.
+
+Go to the shell-lesson-data/exercise-data/proteins directory, and use nano to create a new script titled "middle.sh". We want to create a script that will print the 11th to 15th lines of a file. Let's start with this script
+	head -n 15 octane.pdb | tail -n 5
+Now if you run "bash middle.sh", it will print lines 11-15 of the file octane.pdb (because that is the file specific in the script).
+
+But what if we want to be able to run this script on different input files? We can do that using the variables $N, where N is the Nth input. So for example, change the script to
+	head -n 15 "$1" | tail -n 5
+This is saying "run this command on the first input file". 
+Now if we run "bash middle.sh octane.pdb", we get the same output as before. But we could also run "bash middle.sh ethane.pdb", and it will print lines 11-15 of ethane.pdb.
+
+Let's alter our script again. It will do the same thing, except now we will allow the last line to be a variable too. So we will swap the value 15 with a new variable:
+	head -n "$2" "$1" | tail -n 5
+Now running "bash middle.sh octane.pdb 15" will do the same as before (print lines 11-15 of octane.pdb), but executing "bash middle.sh octane.pdb 25" will print lines 21-25 of octane.pdb!
+
+NOTE: when writing scripts, you should always write comments to explain what things are doing/how it works! So let's add comments to our script above:
+	# prints n=$2 lines from filename=$1
+	head -n "$2" "$1" | tail -n 5
+	
+Writing a script with a loop: let's write one more script, with a loop, AND we will allow you to pass in any number of files at once. The "$@" variable name says "take any number of variables".
+
+This script
+	for filename in $@
+	do
+	    head -n 15 "$filename" | tail -n 5
+	done
+will print lines 11-15 of any number of files you pass.
+So for example "bash middle.sh methan.pdb" and "bash middle.sh *.pdb" will both work. 
+
+grep: grep lets you search for text in a file (or some output piped to the command)
+
+Go to the shell-lesson-data/exercise-data/writing directory. Let's look for the word "not" in the file "haiku.txt". You can do this with the command "grep not haiku.txt". You can also print out the line numbers using the flag "-n".
+
+It is often useful to grep your bash history. You can do this by piping history into grep. So for example, to search for every command with "bash" in your history, run "history | grep 'bash' ". Note I put the single quotes around bash, to make sure it interprets bash as a word, and not a command. 
+
+
+*Afternoon session part 1
+download the Hubble Flow data from this link: https://raw.githubusercontent.com/teuben/AAS241/main/hubble_data.dat
+	On that page, so can press ctrl+s or cmd+s to save the file
+Open jupyter notebook after the command notebook or jupyter notebook. For alternative, you can try using anaconda 3 and open jupyter notebook. 
+Now at the hubble directory and create new python file after clicking "new" then Python 3(ipykernel)
+Cell:small blocks of code to make sure every step is going alright.
+Run: (Shift+Enter) or (Ctrl+Enter) to run the cell
+Execute: The order of running
+Print: In order to print string use "print("hello")" will have output "hello"
+Type: What type of the data(can be string, int)
+Markdown: Good for writing documentation, presentation, or building a story in the notebook.
+	- try Header "# word" and "### word" and see how it changes the size. it introduces header and sub header(more ###'s). 
+	- indentation 
+	- can write math in latex. use single dollar signs for inline math (e.g. $1 + 1 = 2$), and double dollar signs for centered math (e.g. $$ \int_0^{2*\pi} \cos(x) dx = 0 $$).
+Save the python file :"Ctrl+S" which saves the file. 
+
+Lets do some math: 
+creating a variable/ assign a number to a variable: suppose, "a = 73" and write in your jupyter notebook 
+then run the cell by doing "Ctrl+Enter"
+Then you can play with it, For example in another cell, you can type "b= a+27" where "b" stores the value of the sum. You can multiply and store in "c" by running "c=22*b" you'll see the output with the value b. If you skip running "a=73" cell, you'll get error. 
+importing package: 
+import math: 
+help(package): For example it can be "help(math)" because the package we have is "math" which is designed for math calculations. if you want some idea what are those commands in math package and the details, "help()" is the best tool. 
+
+
+if you need to see the manual for any object, function, class, variable, etc., you can call help on that object. For example, to see the manual for the math.sqrt function, call "help(math.sqrt)".
+
+To see all the attributes and methods associated with an object, use the dir function. We call this "introspection" (i.e. looking inside an object to see what it can do). You can ignore everything that has a leading underscore (or two leading underscores). 
+	For example, if you call "dir(math)", you will see things like "sin", and "sqrt", and "e", and "pi". These are all things you can call from math. I.e. you now know that math.sin, math.sqrt, math.e, and math.pi exist.
+
+Index: python elements starts from 0th index. its good know the position of the data we want. 
+List: "[1,10,3,4,5]" this is a list and as usual we can assign this list under a varialbe by doing e="[1,10,3,4,5]". Beware that math with lists might not work the way you expect. For example, 2*e = [1, 10, 3, 4, 5, 1, 10, 3, 4, 5], i.e. it repeats the list twice. To do math in a more intuitive way with something like a list, use a numpy array (see below).
+
+Importing numpy: "import numpy as np"
+Really powerful tool for mathmetics. Which can do:
+	Array: vector of number or strings assigned in a variable
+	can create an array of 5 zeros by " np.zeros(5)"
+	creating an array(non zero): "a_arr = np. array( [12, 2, 32, 4, 34, 4])"
+	square:  "np.square(100)"
+	square root: "np.sqrt(25)" 
+	here, instead of the numbers, you can use the arrays inside.  For example: "np.sqrt(a_arr)" or " "np.square(a_arr)" and run them. 
+	
+	
+	Exercise: create an array of numbers
+	
+	
+	you can see the type after getting the array if its in string or integer or floats etc. by using "type(a_arr)" what type of elements are there. 
+	length of an array/ # of elements: we can get the length of the array we have "len(a_arr)"
+	1D vs multiD array : till now we talked about 1D array. to create multi dimentional array, we can do somethign like this,
+	"multiD_arr = np.array([[1, 2, 3], [4, 5, 6]])"
+	You can also take a 1D array and change its shape by calling "reshape". So for example,
+		arr = np.array([1, 2, 3, 4, 5, 6]).reshape(2, 3)
+		then arr = [[1, 2, 3], [4, 5, 6]] (which has 2 rows and 3 columns as requested)
+		
+	so we have the arrays here. we can get their mean values "np.mean(multiD_arr, axis=1)" here, since we have only 2d array we'll have 2 axis 0 and 1. so you can choose which part of the array you want the mean value for. 
+	
+If you are not sure what a function does in a package, just write that and put "?" at the end and run. you'll see the details of that function.  for example "np.sqrt?" 
+
+Loop: 
+For Loop: 
+intialize the list
+"for i in list: 
+	print(i)"
+here the list can be any list of words or array. and in for loop, the i varialbe goes though each and every elements in the list and  process inside of the loop. 
+	
+if statement:  
+ if (condition):
+	 print("Hello")
+here codition can be something like if something is true then it goes thoguh the loop but if its false, it skips the loop. 
+for example: 
+"a=5
+if (a>5):
+	print("Yay!")"
+this will only print either Yay or nothing(if not true)
+or you can store data too instead of printing and go though algorithm. 
+we can pass the array thoguh the loops. try to play with that! 
+	
+Exercise: make a list of star names and only print  if the length of the star name is 5 characters
+
+
+Afternoon session(3.30pm)
+
+Function: 
+ in order to do that we can try one more time with for loop and create a list. 
+ my_list = [1,2,3,4,5,6,7,8,9]
+ "#" in python does comment
+ initializing value before using in the for loop. 
+ "Total = 0
+ for i in my_list: 
+	 total = total + i   #keeps updating the value for total.
+mean =total/len(my_list)
+sorted_list = sorted(my_list)
+middle = len(my_list)/2
+median = sorted_list(middle)
+print(total,median)"
+here we did a lot of lines of code for each objects. We can make it Easier and quicker by using function. 
+"def calc_mean(list):
+	sorted_list = sorted(mylist)
+	idx = len(my_list)//2
+	return sorted_list[idx]"
+Similarly you can create that calculates total and median function that takes a list.
+Here we defined a function and we can use it by following, 
+print(calc_mean(my_list))
+
+So what we have here is the basic idea of a function, 
+"def function_name(input):
+	comment that says what that function is about
+	equations or the flow of your code. 
+	return "results" " 
+Call the function: just write the name of the function and insert the input. For example, "calc_mean(my_list)"
+You must follow the indentation for python otherwise it will give you wrong calculation or it will give error. 
+
+PEP8(being explicit really helps than being implicit because it easier to know what Is happening with the variable)
+Exercise: Convert from pc to Mpc using function
+
+*Introducing Astropy: 
+from astropy.table import Table
+also
+import astropy.units as u
+which is really useful for assigning units or convert units 
+Reading the file: read fille as a table. for example, 
+tbdata = Table.read(file_with_extention, names = col_names, format='ascii')
+Assigning names for the columns: by creating the list of column names. You are supposed to do this step before you assign the table into "tbdata" because it Will be really useful to use later on. Just to mention, tbdata is an object here. 
+
+We can select specific rows or columns even a value from a multidimenional table Using index. For example,  "tbdata[4]" which will pass 4 rows of the entire table. We also can look for a column and get the column by callinG column. "tbdata='m'" it will look though the column names take the column and pass through. 
+You can even merge both ideas by tbdata[3][4] wich will give us the value for 3rd row and 4th column. Just think this as a matrix. 
+
+
+*Plotting!!!
+Importing the package for plotting
+import matplotlib.pyplot as plt
+
+try plotting something empty "plt.plot()" nothing in this plot. But better to test if the import is working or not. 
+Now, 
+assign the columns for the x and y axis: 
+
+dist = tbdata["dist_mod"]
+v = tbdata["velocity"]
+plt.plot(dist,v, 'o')
+Here the parameters for the plot function, (x axis, y axis , type of points in the graph.)
+Exercise: create a function that turns distance modulus(input) to pc() using the distance modulus equation. 
+
+One thing to mention, you need to create a assign that hold your Output and returns at the end.
+
+Here from the function, we got an array output. Since we are in Astropy table package, we can use min(),max() functions. for example, if we say the array we got after the function is called d_pc, we can get the minimum/ lowest value in the array we can do d_pc.min(), similarly we can do d_pc.max() to get the maximum. 
+
+Polyfit:
+How are you going to fit the model in the plot, you can chose the polynomial depending what you what to do with your data. 
+
+Anotehr important part of the plot is labeling, legend and giving a title:  you can either use string or the assigned variables for these components. For example, "plt.title("fit value", fit_val)" which will print the "fit value" for the title and print the value for the polyfit whatever it is, will be just next to it. 
+
+"plt.scatter(x,y)" is also good for scatter plots
+
+Tomorrow, Closing up the python, git and GitHub. 
+
+
+
+
+
+
+
+
