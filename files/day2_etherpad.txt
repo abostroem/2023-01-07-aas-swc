@@ -1,0 +1,499 @@
+Welcome to The Carpentries Etherpad!
+
+This pad is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents.
+
+Use of this service is restricted to members of The Carpentries community; this is not for general purpose use (for that, try https://etherpad.wikimedia.org).
+
+Users are expected to follow our code of conduct: https://docs.carpentries.org/topic_folders/policies/code-of-conduct.html
+
+All content is publicly available under the Creative Commons Attribution License: https://creativecommons.org/licenses/by/4.0/
+
+ ----------------------------------------------------------------------------
+Here  are some useful links during the meeting:
+	* WIFI :    SSID = Winter241     Password:    AAS241Winter
+	* Etherpad: https://pad.carpentries.org/2023-01-07-aas-swc
+	* Workshop: https://abostroem.github.io/2023-01-07-aas-swc/ - the workshop outline
+	* Software Carpentry Lessons: https://software-carpentry.org/lessons/
+	* https://github.com/teuben/AAS241 - Peter's easter eggs (will be updated during the meeting)
+	* Day1 lessons: 
+		* SWC Shell Novice:  https://swcarpentry.github.io/shell-novice/
+		* Python lesson: https://github.com/abostroem/2017-01-03-aas/blob/gh-pages/python/master_plan.ipynb
+			* This isn't the official SWC python lesson but it contains the same material. Here are links to the official lessons
+			* P1 (we followed this material although not in the same order or with the same dataset):  https://swcarpentry.github.io/python-novice-inflammation/
+			* P2 (this is a relatively new lesson that covers different material than we presented in this workshop): https://swcarpentry.github.io/python-novice-gapminder/
+		* Hubble Flow data: https://raw.githubusercontent.com/teuben/AAS241/main/hubble_data.dat
+	* <more to come here during the workshop>
+	* https://peps.python.org/pep-0008/
+	* Day 1 etherpad: https://github.com/abostroem/2023-01-07-aas-swc/blob/gh-pages/files/etherpad.txt
+	* Day2 lessons:
+		* String formatting resources:
+			* https://www.w3schools.com/python/ref_string_format.asp
+			* https://docs.python.org/3/tutorial/inputoutput.html
+		* SWC Git Novice:  https://swcarpentry.github.io/git-novice/
+		* Azalee's slides:
+			* local git: https://slides.com/abostroem/local_version_control
+			* remote git:  https://slides.com/abostroem/collaborating_using_git
+		* Open Source Collaborations:
+			* https://github.com/abostroem/code-review-aas241
+			* repository to fork: git@github.com:abostroem/code-review-aas241.git
+			* More reading:
+				* slides: 
+					* branching: https://slides.com/abostroem/deck-6
+					* open source workflow: https://slides.com/abostroem/open-source-workflow/edit
+					* Github Collaboration Guidelines:
+						* LSST:    https://developer.lsst.io/v/u-jonathansick-plutchak-slack/
+						* Astropy:  
+				* Advanced git lesson: https://ivastar.github.io/advanced-git/
+	* post survey: https://carpentries.typeform.com/to/UgVdRQ?slug=2023-01-07-aas-swc 
+
+
+Day 2 Notes:
+
+*Finishing up Python stuff from yesterday 
+*Formatting refresher 
+
+Files are not sorted lexically. File 001, File 002 to put the files in order. There is a way to format it so the 00's are added at the front. 
+
+	for i in range (0, 15, 3):
+		print(f'file(i:0>3)')
+		
+This will cause the files to print out as file000, file003, file006 etc.
+
+g is floating point format as human reading friendly as posible.  Example is print("Value of pi: %g five=%g" % (math.pi, f))
+
+*Plotting with suplots
+
+If you are on Windows and having trouble with the conda path when you're running a python file from the terminal, try using the command: 
+	export PATH=<LocalPathToAnaconda>:$Path
+where "LocalPathToAnaconda" is the location of your specific Anaconda distribution. This is probably going to be /C/Users/YOURusername/Anaconda3 --- replace "YOURusername" with your user name on  your computer. i.e., if your username is "george03", the command would be: 
+	export PATH=</C/Users/george03/Anaconda3>:$Path
+You can check your path by typing: "which python" into your terminal. The path that it outputs should be a directory that includes your anaconda path.
+
+Numpy is needed.
+
+import numpy as np
+import matplotlib,pyplot as plt
+
+Need astropy to read fits files
+
+from astropy import fits - This allows you to read fits files
+
+In the example, you need to pull the fits file from the raw directory and the main branch. 
+	Link to the fits file in the example: https://raw.githubusercontent.com/teuben/AAS241/main/M100.mom0.fits
+
+hdu=fits.open(fitsfile) - the Fits file can be any string name directing you to the fits file. If you have a local file this just needs to be your local path. 
+
+Look at the header for information about the file. hdu(0).header gives you the dimensions and history of the file.
+
+data=hdu[0].data - This gives you an ndarray which is the arraw of data from the fits file. If you file is 60 x 60 pixels it will be a 60 x 60 array. It is not in astronomical coordinates and is just treated as a normal array with the origin in the top left. The first value is the x dimension (RA), the second value is the y dimension (dec)
+
+plt.imshow(data) will plot the image in the default coordiantes. If you tinker with the data in the array it will change the pixel values. You can add a colorbnar to see the intensities by doing plt.colorbar()
+
+Note: If you put a semicolon at the end of your last command it will not print out the extra information about the command that you don't need.
+
+plt.colorbar()? can let you define the stretch. This allows you to define a mathemartical operation if you would like for the display. 
+
+The data can also be given to a histogram to look at the pixel values. 
+
+plt.hist(data); - This does not give you a good output as it will give you 64 histograms in a 64 x 64 image, which is not useful. 
+
+data2=np.ravel(data) - This allows you to squash the dimensions so they are not seperated into bins. You also may want to adjust the number of bins as the default bin number can be very low. You can also change it from a linear to a log histogram by adding log = True.
+plt.hist(data2, bins=32, log=True)
+print(data2.mean(), data2.std()) - prints out the values for the mean and the standard of deviation. 
+
+Normally shells start with a bunch of plt commands, if you had a script you would explicitly need to put plt.show(), but you don't need to do that in Jupyter notebooks.
+
+For subplots
+fig, ax = plt.subplots(1,2) This makes 1 row and 2 columns. 
+
+If you print out the ax discriptor, it will show you a list of the plots. 
+
+Don't just use plt.imshow as it will only show the last plot. 
+
+Instead, ax[0].imshow(data), which will show you the first one, and if you then do ax[1].hist(data2, bins=32, log=True) it will plot the second one as the histogram. When using suplots, each plot does not need to show the same type of data, you are able to mix multiple images/diagrams/plots. 
+
+Unfortunetly we lose the colorbar with this. We cannot do ax[0].colorbar. It is not part of the axis descriptor. We have to do plt.colorbar(), but this won't work immediatly.
+
+Instead we need a descriptor im0 = ax[0].imshow(data)
+plt.colorbar(im0, ax=ax[0]) Which will assign the colorbar to the 0 axis image. 
+
+filesplot3 shows an example of how to make more dynamical plots and boxes. It is in the final notebook you will recieve for reference.
+
+Gridspec is another way you can do it. Please refer to matplotlib to see all of the different ways you can plot. Curvefit is another plot, where you can but a histogram next to it sideways and a gausian fit to explore if the risiduals are normally distributed. Again, it will be avaliable to you in the notebooks at the end. 
+
+If you want to keep the notebook locally, you can go into the menu and say download as .py. This will give you a local python program copy of the program. The python version of the notbook will show up as FILENAME.py. When you download it will likely end up in your default downloads location. If you can't find the file, you can try searching the filename in your computers search bar and it should show find the file and where it is located.
+
+If you want to move the file, the mv command (mac) will help you move it to a different folder.
+
+If you work in an editor, search on google how to add colors so that your editor displays information about your python code for you. This can help with debugging. USing other ptyhon specific editors, such as VIM, sublime, Pycharm, Microsoft visual studio, etc can also help with troubleshooting code.
+
+If you want to see the code, the commands "less", "more", and "cat" can all display the information on the screen that is inside the python file:
+	less WorkInProgress2.py
+	cat WorkInProgress2.py
+
+A semicolon in python is a command seperator. This could put your code on one line, however this is not a good coding practice nessearily and can make your code are to read. (To see good python coding practices, check out pep8 https://peps.python.org/pep-0008/. Some python developer tools can tell you if you have correct pep8 coding and will warn you when your code is not following style guidelines.)
+
+When you run the program on a command line, you need to remember to add plt.show() otherwise the code will not display. The cells in the notebook expect that you want show so they plot them anyways, but you need it explicitly in the command line. 
+
+The file is currently hardcoded for the specific fits file. This does not give it a dynamical input, so you would have to change the file manually for other fits files. Adding argsparse allows you to tell the python code any fits file name that you would like to add
+
+*import argparse
+ 
+*parser = argeparse.ArgumentParser()
+parser.add_argument('fitsfile', help = 'input Fits file', defualt=None) - this is adding an arguement called fitsfile. It needs to match the name of the variable that you want to read in. The help is optional but it can help users if they do not input the correct argument. 
+ parser.add_argument('--plot', help 'outpiut.plot', defualt='')
+ 
+args = parser.parse_args() - This now pulls in all of the arguemnts
+fitsfile = args.fitsfile (you don't need to do this, you could leave it as args.fitsfile and use that, however if you want to match your previously written variables you need to assign the args values to your other variable names)
+plot = args.plot
+ 
+plt.saveplot(plot) - saves the plot if you don't want to show it but want an output file.
+
+open file.pdf will open the file in whatever viewer is avaliable so that you can look at the output. 
+
+When using matplotlib and using show, you can look at an interactive version of the plot and save it manually. However, it is not practical when looking at large number of images. You can then zoom in, change scaling, etc all in an interactive window. 
+
+--h will show you the help options within the script that you wrote into your arguments. Very useful for troubleshooting and understanding options in other python programs.
+
+Reminder - in the command line if you want to see previous commands you can tap the up arrow to scroll through your prior commands. 
+
+The example of command line arguments given are the closest python argument options to unix. There are other options avaliable in python that can be used.
+
+If you accidentally use --plot=FILENAME it will still work, despite the = not being needed.  However, if you forget the -- and do plot= FILENAME that will not work as it won't be able to find the argument. 
+
+
+*Version Control with GIT 
+What is version control? It is a tool to track the history of the project/code. You can see who changed which line of code, which is great for troubleshooting. You can then see git blame to see who modified the line of code.
+
+You can use it as an induvidual to track your own history, but its power is in collaborations where you can edit code in groups in an easy and effective maner. No more sending code to each other and having multiple versions!
+
+Git will warn you if a line of code is different between versions and will let you chose which one you would like to keep. You can also specify which version of the code you use in your research, which allowd you to point people to a specific version of code they could use to try and reproduce your results with. 
+
+It can be used locally or online. Github is online and is an excellent backup for your code. You can make it public or private. Public is viewable by anyone, and people can branch your code themselves. You can make it private where only you and specific collaborators can see the code.
+
+You can see previous versions and the changes, as well as write messages for what you have changed so you can look for your own messages to understand the changes you made. It is very hard then to accidentally delete something because prior versions will exist. 
+
+You can roll back edits if you accidentally remove something or break something that you need. 
+
+You can also see who wrote pieces of the code and lets you ask them why they changed things. 
+
+Overleaf allows you to use git! 
+
+Configuring git:
+
+All slides are linked in above.
+
+These are all commands used in your terminal. Because all of the comamnds start with "git", that tells your computer that this is a command to be executed with git, rather than just with the terminal. 
+
+--global changes it across your entire directories and allows your
+
+Don't use global on a shared computer as it will mopdify it for everyone.
+
+git config --list (Shows you your current configurations)
+
+git config --global COMMAND (Command is whatever specific configuration you want to change)
+
+Example:
+
+git config --global user.email "Emailaddress.edu"
+git config --global core.editor "nano"
+
+What is a repository? A directory where you run git init creates a .git file. 
+
+git init
+ls -a (This command shows you everything in the folder INCLUDING the hidden files. If you just do ls you will not see the .git file. This is useful anywhere you have hidden files (such as seeng .bashrc)
+git status
+
+*DO NOT MAKE A REPOSITORY WITHIN A REPOSITORY!!!
+
+Make a directory called planets
+
+cd into the directory
+
+ls into the directory and it will be empty. 
+
+master branch and main branch are the same thing, however git is moving away from master to having everything named main. 
+
+branches are parallel versions of main with changes that have been made which are currently not on main.
+
+You can move your folder wherever you like, as long as you move the entire folder. If you want to remove git entirely, you can remove the .git file and it will no longer be a repo. If you want to rename the directory, you can do that and git will pick up the rename. 
+
+Within the folder, you can create a text file such as mars.txt
+
+Now once you type git status you will see that you have made a file but that it is untracked. 
+
+The file is recognized by git but git is not recording its history. Git will suggest what to do next
+
+adding puts something in your staging area. It hasn't actually made a change yet.
+
+Note: If you use Visual Studio Code/Pycharm/other editor, they will often automatically add your files to .git or ask you if you would like to add a created file within your folder to git. This will automatically track your files.
+
+git commit will actually commit the changes to the git history. This is only a LOCAL record as nothing has been pushed onto github. Until you push, nothing is going to a remote location or making changes for other people.
+
+When using git commit from the command line, you want to put your comit messages on the command line.
+
+git commit -m "starting to think about mars"
+
+If you do git commit, it commits EVEYRTHING that is in the staging area. 
+
+Once you commit, git status will be cleared.
+
+The messages is not the name of the file, it is a record that shows you a reminder of what you have commited. The git message title is limited to 72 characters. It is suggested that the messages be succint but descriptive of what the changes are.
+
+If you want to exceed the 72 character limit, you can add a message description.
+
+Command line Example:
+
+*git commit -m "This is my title, which is less than 72 chars" -m "This is my description, which can be as long as I want";
+
+
+"git log" shows the log of all changes, with the most recent changes first. the log has a LOT of different options, you can use the command "git help log" to show you all of the options (or just google the specific thing you're trying to look for and it'll probably show up)
+	Something useful for once your log is chunky is the command "git log 1", which will show the most recent 1 entry in your log. Using "git log 2" will show the recent 2 entries, etc.
+hit the q key to exit the help screen when you're done
+	
+Modifying added files
+
+Git already knows about your file, so we will look at how git tracks changes in existing files.
+
+Modify one of your files (mars.txt). The modifications ca be anything. Once the file is saved, you can check your git status. It will inform you that one of the files has been modified (modifed files will show up as red if color coding is on).
+
+git diff will show you every change in every file, but doing git dif SPECIFICFILE.txt whill show you the changes JUST in the specific file. 
+
+If you see a green +, that will show you an added line. a red - informs you the line has been removed. 
+
+If you are happy with the changes, git add mars.txt and then doign a git commit -m "message" will then commit the changes to your local repository. 
+
+Referencing different versions
+
+By default, your current version is HEAD. If you want to go to the verison before head, you use HEAD~1, or HEAD~2 for 2 ahead.
+
+You can also use the commit hash to got to a specific commit. 
+
+"git diff HEAD~3"  for example, will show you all of the differences since three versions ago 
+
+If you copy the first 7 characters of your commit hash, you can paste the 7 chracters in and it will still work.
+
+Example:
+	git diff 12vdqd3 will show the differences since the commit with the hash starting with 12vdqd3
+
+echo is a print to screen command
+
+echo "the mummy will like the dry air" > mars.txt has rewritten the whole file. Git status will show the changed version.
+
+Git checkout HEAD mars.txt will restore the last version and undo the changes. You can also do git restore FILENAME to restore the previous verison as well. 
+
+To test reverting, you an delete the file or compeltely overwrite a file. You can then try switching between version to see how they change.
+
+If you go past the number of versions you have, you will get an error
+
+If you are writing filenames in a command, try pressing TAB, and it will autocomplete the filename.
+
+Example:
+
+git checkout j 
+
+Press TAB, and it will autocomplete to
+
+git checkout jupiter.txt
+
+git dif --staged will show you everything that has been changed in the staged files. 
+
+
+detached head states:
+
+If you get an error about a detached head here is an article explaining what it means: \https://circleci.com/blog/git-detached-head-state/?utm_source=google&utm_medium=sem&utm_campaign=sem-google-dg--uscan-en-dsa-maxConv-auth-nb&utm_term=g_-_c__dsa_&utm_content=
+
+IF YOU ARE IN A DETACHED HEAD STATE, use 
+*git switch -
+This will move you back to your original strting position.
+
+git log should now have your previous edits. 
+
+If you have made all of your changes 
+HEAD ~1 and HEAD ~2,  if you bring one file forward it is happy.
+
+
+*Collaborating using GitHub
+So far, we've been working entirely with a local repository. We have one staging area and our normal directory, and everyhting is on our local computer. But what if you want other people to be able to access everything, what if you have collaborators? The easiest/most common way to do this is using GitHub. 
+
+Github is a REMOTE repository. There's one remote repository, and then every collaborator has their own local repository. This remote repository can serve as your backup and as your public-facing thing. 
+
+Private repositories: only people you specifically invite will have access to it. Public repositories: everyone can see it. (hot github tip: sign up with a .edu email, it'll allow you to have unlimited private repositories)
+
+Exercise: everybody go sign into github 
+
+*SSH keys
+When you're doing something from the command line, GitHub needs to know that you are YOU. There are two ways to do this: 
+1. use https and your password from the command line (this is usually the annoying way, because GitHub has password requirements and you have to change your password sometimes)
+2. use SSH keys. SSH keys are a code unique to your computer, so you can automatically transmit and validate files/data. We're gonna generate a public key and a private one. (Think of the public key as a padlock, and the private key as the literal key that opens the padlock)
+
+to find out if you already have SSH keys set up:
+*ls ~/.ssh
+	there will be a couple files starting with "id_" in the ~/.ssh folder if you DO have them set up already
+
+if you DON'T have those files, here's how to generate SSH keys:
+use the command: 
+*ssh-keygen -t ed25519 -C "email@email.com"
+	ed25519 is the type of algorithm it uses to generate the keys (there are other types of algorithms, like "rsa")
+	if this is a shared computer, you should give it a password. otherwise just hit enter a couople times to keep all the defaults with no password
+use ls ~/.ssh again to see the new files that were generated
+	id_ed25519.pub is the public key
+	id_ed25519 is the PRIVATE one. don't give this to people!!!
+	
+giving your public key to GitHub: 
+	* on github.com, go to profile > settings > SSH and GPG keys > new SSH key
+	* give it a title describing the computer that you are on (for example, "work computer" or "personal laptop")
+	* go back to your shell and use "cat ~/.ssh/id_ed25519.pub"
+	* copy the output from that command, and paste it into the SSH key location on github 
+	* to find out if it worked, use "ssh -T git@github.com" (on the command line) and it'll tell you that you successfully authenticated it if it worked
+
+*Connecting remote and local repositories
+Exercise: create a remote repository, and then tell the remote reposatory about your local reposatory (and vice versa) so they know how to interact with each other
+	* At the top of your github dashboard, there's a plus sign. hit the plus sign and then hit new repository
+		* Give it a name: the remote repository does not strictly *need* to have the same name as the local one, but it is certainly recommended. The only requirement is that that .git is inside of the local repository
+		* You can choose public vs private repository
+		* Do you want to initialize your repository is saying there should be default things in your repository, but just ignore all of those and just create the repository. 
+	* Git gives you the options of creating a new repository, and of having a local repository. We're dealing with the second one, because we already have a local repository! 
+	* At the top of the "quick setup" page, there's a button to switch between SSH keys and HTTPS
+	* Inside your planets directory, use: 
+	git remote add origin git@github.com:yourlogin/planets.git 
+		* Now, the whole "git@github.com:yourlogin/planets.git" shebang is just called ORIGIN. if you talk about "origin" on the command line, it knows that you mean the whole link to the remote repository 
+	* View what you just did using
+	git remote -v
+	* to check which branch you are on, use 
+	git branch
+		* note: the primary branch name is either master or main, depending on the verison of git you're running
+	* to deal with that, we're gonna rename our master branch as "main" :
+	git branch -M main
+	* and then put your local repository into the currently-empty remote repository:
+	git branch -u origin main
+	* woohoo, you have now taken everything you did locally and put it into the remote repo! go into the repository on github.com, and you can see the jupiter.txt and mars.txt files that you made earlier
+
+a note about PUSH/FETCH/PULL language:
+	* Push means to put the changes from your local repository onto the remote one. syntax: 
+	git push origin main
+	* Fetch is to get things off the remote repo, but it doesn't combine the changes on your local repo
+	* Pull is fetch and merge combined; it gets things off the remote repo and merges your local repo with it. syntax:
+	git pull origin main
+	* Any issues that come up during the merge will be fixed locally to keep the remote repo free from merge problems. 
+
+*Actually collaborating
+exercise: collaboration time! 
+	* one of you is dracula and the other of you is wolfman (take your pick). You will be using dracula's repository, so you now will give each other write access to dracula's repository
+	* getting set up for collaboration: 
+		* WOLFMAN instructions: 
+			* you don't have dracula's repository stored locally, but now that's the main one! so you're gonna clone dracula's repository. 
+			* REMEMBER YOU DO NOT WANT NESTED REPOSITORIES!! to avoid nesting, cd out of your planets repository and make a new directory called planets_collab
+			* clone dracula's repository into your planets_collab folder. the URL will come from dracula's repo
+			git clone git@github.com:DraculasLogin/planets.git
+			* cd into the new repo, which should be planets_collab/planets
+			* run "git status"  in there to double check everything is all good
+		* DRACULA, now you have to actually let Wolfman write to the files inside your repo, so you have to make them into an official collaborator
+			* in the repository on github.com, go to settings > collaborators
+			* do the two factor authentication if it requires it
+			* add Wolfman's github username to add them as a collaborator
+			* WOLFMAN, go accept the invite in your email. it also might show up in your github notifications, which is the little bell at the top of the github page. It will have a blue circle if you have a notification/invite.
+	* woohoo, you are set up for collaboration
+	* so now we can actually collaborate. three things can happen while you collaborate
+		* specific instructions on how to do these are in the slides, but here's the TLDR on what they mean
+		* the easy one: wolfman makes changes > wolfman pushes those changes to the remote repo > dracula pulls the remote repo > dracula makes changes > dracula pushes > wolfman pulls it > wolfman makes changes > etc etc
+		* merge without conflict: wolfman changes line 1 of their local version of the code > dracula changes line 2 of THEIR local version of the code > wolfman pushes with no problem > dracula tries to push their change and github says "hey now buckaroo slow down, the remote repo has changed since you last pulled from it!" > dracula pulls the new change and merges it with their local code (nano might auto-merge because there isn't a conflict, but you might have to accept the merge manually)
+		* merge with conflict: wolfman and dracula both change line 1 of the code > wolfman pushes first, push is accepted > dracula tries to push and github says the same "hey there's been a change, you have to pull the new version" > dracula pulls it and gets a big scary error message because now it doesn't know how to merge the two versions of code > dracula has to solve the merge conflicts locally before pushing changes
+			* resolving the conflict can mean that dracula overwrites wolfman's changes, or combines the two lines into one, or accepts wolfman's changes and deletes their own, or anything else
+	* Errors:
+		* your remote and local branch don't have the same name. This results in an error about refspec
+			* solution: git push origin <local branch>:<remote branch>
+		* You get an error about divergent branch histories:
+			* See this well written post: https://salferrarello.com/git-warning-pulling-without-specifying-how-to-reconcile-divergent-branches-is-discouraged/
+
+the final thing to do is pull the class repository, so you have all the notebooks that we've used yesterday and today. you'll want to re-pull this in about a week, once everything has actually been added to it 
+	* repository to pull from: https://github.com/abostroem/2023-01-07-aas-swc/
+		* the 'files' section is where things will live 
+	git clone git@github.com:abostroem/2023-01-07-aas-swc.git
+	* to update this later, go into that directory and use
+	git pull origin gh-pages
+	
+
+*Open source collaborations
+forks
+	* if you want to pull something else but you don't get write access, you can make a fork 
+	* on github, you'll fork someone else's github and then clone that to get it locally
+		* but instead of modifying it as main etc, you'll be modifying it as a branch
+		* so now your pull and push will be done on a branch
+	* if you are doing that, you can make a pull request. that puts your branch into the original (so 
+
+exercise: code review collaboration
+	* create a fork of this repository on GH: https://github.com/abostroem/code-review-aas241
+	* you now have your own version of that repository
+	* back on the command line, clone your version of the repository and then cd into that folder
+	* there's a .py file in there! try to run that file. 
+	python my_plot.py
+		* oh noooo, there's an error in that python file
+	* instead of modifying the master .py file itself, we're going to modify a branch
+		* create a new branch: git branch newbranchname
+		* sit onto the branch: git checkout newbranchname
+		* you can also do both of these tasks with one command using "git checkout -b newbranchname" 
+	* task: go fix the indent errors in the .py file. fixing the issues in the .py file included: 
+		* deleting indents that weren't supposed to be there
+		* changing the path to the data
+		* changing the sizes of each array, because the data we are using is not 1024 in each direction
+		* creating a variable called fitsfile
+		* ways to clean up the code
+			* use a function, because we're making plots along 3 columns so we can do it the same for every plot
+			fitsfile = 'https://github.com/teuben/AAS241/raw/main/M100.mom0.fits'
+			data = fits.open(data)
+			def plot1(col_number, data):
+				col=data[col_number, :]
+				pyplot.figure()
+				pyplot.plot(np.arange(data.shape[0]),col)
+				pyplot.legend(f'column {col_number}', 'Mean')
+				pyplot.title(f'Plot of column {col_number} values and mean')
+				pyplot.xlabel('pixels')
+				pytplot.ylabel('intensity')
+			plot1(20, data)
+			plot1(35, data)
+			plot1(50, data)
+		* adding the plt.show() command at the end so we can see our plots
+	* once you try to add/commit/push it, it's gonna yell at you because github does not yet know that you've created a branch. to create a new GH branch and then push your changes, use 
+	git push --set-upstream origin newbranchname
+	* back on github.com, scroll all the way down on your branch to see what has changed
+	* github will allow you to make a pull request, which is you sending your changes (on your branch) back to the base master on GH
+		* if your pull request is then accepted and merged, GH will tell you which branch can now be deleted safely because they've been adapted upstream
+	* [having issues with merging with conflict from Matt's branch, solution to that is TBD]
+	* create an upstream alias with "git remote add upstream git@github.com:abostroem/code-review-aas241"
+		* to check if this worked, use "git remote -v" --> now, you have ORIGIN, which is your version of everything, and then UPSTREAM, which is the version that you forked from originally
+		* then fetch from upstream "git fetch upstream"
+		* and merge (dealing with all the merge issues we did earlier if they arise) with "git merge upstream/master"
+
+A summary of some of the verbs to know with git
+	* switch
+	* rebase
+	* fork (to grab a slice of someone else's main, to make your own remote version of someone else's repo)
+	* clone (to get your remote to your local)
+	* pull and push (to go between your remote and your local after you've cloned)
+	* fetch and merge (combined, they make pull)
+	* branch
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
